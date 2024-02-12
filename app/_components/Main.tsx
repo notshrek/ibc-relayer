@@ -12,13 +12,14 @@ export default function Main() {
   }, []);
 
   const handleStepChange = () => {
+    mainRef.current!.style.transitionDuration = "0.3s";
     mainRef.current!.style.opacity = "0";
   };
 
   // automatically go to the next step once the content has faded out
   const handleTransitionEnd = () => {
-    mainRef.current!.style.transitionDuration = "0.4s";
     if (mainRef.current!.style.opacity === "0") {
+      mainRef.current!.style.transitionDuration = "0.6s";
       mainRef.current!.style.opacity = "1";
       setStep(step + 1);
     }
@@ -26,7 +27,7 @@ export default function Main() {
 
   return (
     <div
-      className="flex flex-col items-center text-lime-100 opacity-0 duration-1000"
+      className="flex flex-col items-center text-lime-100 opacity-0 duration-700"
       onTransitionEnd={handleTransitionEnd}
       ref={mainRef}
     >
