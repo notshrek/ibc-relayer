@@ -11,6 +11,16 @@ const config: Config = {
       fontFamily: {
         clashDisplay: ["var(--font-clash-display)"],
       },
+      animation: {
+        slideY: "slideY 0.5s ease-in forwards",
+      },
+      keyframes: {
+        slideY: {
+          "100%": {
+            transform: "translateY(var(--target-y))",
+          },
+        },
+      },
     },
   },
   plugins: [],
