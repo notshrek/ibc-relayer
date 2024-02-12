@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Introduction from "./Introduction";
+import ChainSelector from "./ChainSelector";
 
 export default function Main() {
   const mainRef = useRef<HTMLDivElement>(null);
@@ -27,11 +28,12 @@ export default function Main() {
 
   return (
     <div
-      className="flex flex-col items-center text-lime-100 opacity-0 duration-700"
+      className="flex flex-col items-center text-lime-100 opacity-0 duration-700 font-clashDisplay"
       onTransitionEnd={handleTransitionEnd}
       ref={mainRef}
     >
       {step === 0 && <Introduction handleStepChange={handleStepChange} />}
+      {step === 1 && <ChainSelector />}
     </div>
   );
 }
