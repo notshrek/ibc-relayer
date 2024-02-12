@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Introduction from "./Introduction";
 import ChainSelector from "./ChainSelector";
+import useSignerStore from "../_stores/signerStore";
 
 export default function Main() {
   const mainRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,15 @@ export default function Main() {
       setStep(step + 1);
     }
   };
+
+  const signerA = useSignerStore((state) => state.signerA);
+  const signerB = useSignerStore((state) => state.signerB);
+
+  useEffect(() => {
+    if (signerA && signerB) {
+      handleStepChange();
+    }
+  }, [signerA, signerB]);
 
   return (
     <div

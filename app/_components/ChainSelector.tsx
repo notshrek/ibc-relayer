@@ -1,7 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { chains } from "chain-registry";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { ChevronUpDownIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
+import useSignerStore from "../_stores/signerStore";
+
+declare global {
+  interface Window {
+    leap: any;
+    keplr: any;
+  }
+}
 
 export default function ChainSelector() {
   return (
@@ -40,6 +48,28 @@ function ChainBox({ side }: { side: String }) {
       : chains.filter((chain) => {
           return chain.chain_name.toLowerCase().includes(query.toLowerCase());
         });
+
+  const signer = useSignerStore((state) =>
+    side === "Source" ? state.signerA : state.signerB
+  );
+  const setSigner = useSignerStore((state) =>
+    side === "Source" ? state.setSignerA : state.setSignerB
+  );
+
+  const handleConnect = () => {
+    // use keplr if it's found, otherwise use leap wallet
+    window[window.keplr ? "keplr" : "leap"]
+      .enable(chainInfo.chain_id)
+      .then(() => {
+        setSigner(
+          window[window.keplr ? "keplr" : "leap"].getOfflineSigner(chainInfo)
+        );
+      });
+  };
+
+  useEffect(() => {
+    setSigner(null);
+  }, [selectedChain[0], selectedChain[1]]);
 
   return (
     <div className="flex flex-col p-4 bg-white bg-opacity-5 rounded-lg mt-2 w-full max-w-[500px]">
@@ -99,8 +129,15 @@ function ChainBox({ side }: { side: String }) {
         )}
       </Combobox>
 
-      <button className="bg-lime-300 hover:bg-lime-200 p-2 rounded-lg text-lime-950 font-medium mt-1">
-        Connect wallet for {chainInfo.chain_name}
+      <button
+        onClick={handleConnect}
+        className="bg-lime-300 hover:bg-lime-200 p-2 rounded-lg text-lime-950 font-medium mt-1"
+      >
+        {signer ? (
+          <CheckCircleIcon className="h-6 w-6 text-lime-600 mx-auto" />
+        ) : (
+          `Connect wallet for ${chainInfo.chain_name}`
+        )}
       </button>
     </div>
   );
