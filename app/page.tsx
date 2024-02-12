@@ -8,7 +8,7 @@ export default function Home() {
       </div>
       <div className="flex flex-col items-center justify-center h-full">
         <Logo large={true} />
-      </div> 
+      </div>
     </main>
   );
 }
