@@ -1,7 +1,6 @@
 import type { IBCInfo } from "@chain-registry/types";
 import useSignerStore from "../_stores/signerStore";
-import { IbcClient, Link } from "@confio/relayer";
-import { GasPrice } from "@cosmjs/stargate";
+import type { IbcClient, Link } from "@confio/relayer";
 import { useEffect, useState } from "react";
 import useChainStore from "../_stores/chainStore";
 
@@ -19,6 +18,9 @@ export default function PacketsList({
 
   useEffect(() => {
     (async () => {
+      const { IbcClient, Link } = await import("@confio/relayer");
+      const { GasPrice } = await import("@cosmjs/stargate");
+
       const [accountA] = await signerA.getAccounts();
       const [accountB] = await signerB.getAccounts();
       let clients: [IbcClient | null, IbcClient | null] = [null, null];
