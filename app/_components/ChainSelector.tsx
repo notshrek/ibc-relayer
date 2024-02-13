@@ -18,7 +18,7 @@ export default function ChainSelector() {
       <h2 className="text-lime-300 text-3xl font-semibold mb-4">
         Chain Selection
       </h2>
-      <p className="text-lg mb-8">
+      <p className="text-lg mb-8 text-center px-4">
         Select the source and destination chains that the packet is meant to be
         relayed between.
       </p>

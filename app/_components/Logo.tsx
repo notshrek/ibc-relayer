@@ -7,7 +7,7 @@ declare module "react" {
 export default function Logo({ large }: { large: boolean }) {
   return (
     <div
-      className={`text-lime-200 text-4xl font-black font-clashDisplay overflow-hidden ${large && "text-9xl absolute -z-10"}`}
+      className={`text-lime-200 text-4xl font-black font-clashDisplay overflow-hidden ${large && "text-[14vw] leading-[14vw] absolute -z-10"}`}
     >
       {[..."Relayer"].map((c, i) => (
         <span
