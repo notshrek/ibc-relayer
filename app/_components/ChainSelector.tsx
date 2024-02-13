@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Combobox } from "@headlessui/react";
-import { chains } from "chain-registry";
+import type { Chain } from "@chain-registry/types";
 import { ChevronUpDownIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
 import useSignerStore from "../_stores/signerStore";
 import useChainStore from "../_stores/chainStore";
@@ -13,6 +13,14 @@ declare global {
 }
 
 export default function ChainSelector() {
+  const [chains, setChains] = useState<Chain[] | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      setChains((await import("chain-registry")).chains);
+    })();
+  }, []);
+
   return (
     <>
       <h2 className="text-lime-300 text-3xl font-semibold mb-4">
@@ -22,13 +30,22 @@ export default function ChainSelector() {
         Select the source and destination chains that the packet is meant to be
         relayed between.
       </p>
-      <ChainBox side="Source" />
-      <ChainBox side="Destination" />
+      {chains ? (
+        <>
+          <ChainBox side="Source" chains={chains} />
+          <ChainBox side="Destination" chains={chains} />
+        </>
+      ) : (
+        <>
+          <PlaceholderBox side="Source" />
+          <PlaceholderBox side="Destination" />
+        </>
+      )}
     </>
   );
 }
 
-function ChainBox({ side }: { side: String }) {
+function ChainBox({ side, chains }: { side: String; chains: Chain[] }) {
   const [selectedChain, setSelectedChain] = useState<[string, string]>([
     side === "Source" ? "celestia" : "archway-1",
     side === "Source" ? "celestia" : "archway",
@@ -155,6 +172,20 @@ function ChainBox({ side }: { side: String }) {
         ) : (
           `Connect wallet for ${chainInfo.chain_name}`
         )}
+      </button>
+    </div>
+  );
+}
+
+function PlaceholderBox({ side }: { side: string }) {
+  return (
+    <div className="animate-pulse flex flex-col p-4 bg-white bg-opacity-5 rounded-lg mt-2 w-full max-w-[500px]">
+      <h3 className="font-medium text-xl opacity-50 mb-4">{side} Chain</h3>
+      <Combobox>
+        <Combobox.Input className="w-full bg-lime-100 py-2 rounded-lg" />
+      </Combobox>
+      <button className="bg-lime-300 hover:bg-lime-200 p-2 rounded-lg text-lime-950 font-medium mt-1">
+        Connect Wallet
       </button>
     </div>
   );
