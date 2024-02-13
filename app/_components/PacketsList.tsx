@@ -21,62 +21,43 @@ export default function PacketsList({
     (async () => {
       const [accountA] = await signerA.getAccounts();
       const [accountB] = await signerB.getAccounts();
-      let clientA: IbcClient, clientB: IbcClient;
-      let rpcIdx = 0;
+      let clients: [IbcClient | null, IbcClient | null] = [null, null];
+      let rpcIdx: number;
 
-      while (true) {
-        try {
-          clientA = await IbcClient.connectWithSigner(
-            chainA!.rpcs[rpcIdx],
-            signerA,
-            accountA.address,
-            {
-              gasPrice: GasPrice.fromString(
-                chainA!.fee.gasPrice + chainA!.fee.denom
-              ),
-              estimatedBlockTime: 3,
-              estimatedIndexerTime: 5,
-            }
-          );
+      for (let i = 0; i < 2; ++i) {
+        rpcIdx = 0;
+        while (true) {
+          try {
+            clients[i] = await IbcClient.connectWithSigner(
+              i === 0 ? chainA!.rpcs[rpcIdx] : chainB!.rpcs[rpcIdx],
+              i === 0 ? signerA : signerB,
+              i === 0 ? accountA.address : accountB.address,
+              {
+                gasPrice: GasPrice.fromString(
+                  i === 0
+                    ? chainA!.fee.gasPrice + chainA!.fee.denom
+                    : chainB!.fee.gasPrice + chainB!.fee.denom
+                ),
+                estimatedBlockTime: 3,
+                estimatedIndexerTime: 5,
+              }
+            );
 
-          console.log("clientA:", clientA);
-          break;
-        } catch (err) {
-          console.error(err);
+            console.log(`client ${i === 0 ? "A" : "B"}:`, clients[i]);
+            break;
+          } catch (err) {
+            console.error(err);
+          }
+          ++rpcIdx;
         }
-        ++rpcIdx;
-      }
-
-      rpcIdx = 0;
-      while (true) {
-        try {
-          clientB = await IbcClient.connectWithSigner(
-            chainB!.rpcs[rpcIdx],
-            signerB,
-            accountB.address,
-            {
-              gasPrice: GasPrice.fromString(
-                chainB!.fee.gasPrice + chainB!.fee.denom
-              ),
-              estimatedBlockTime: 3,
-              estimatedIndexerTime: 5,
-            }
-          );
-
-          console.log("clientB:", clientB);
-          break;
-        } catch (err) {
-          console.error(err);
-        }
-        ++rpcIdx;
       }
 
       const isCorrectOrder = connections[0].chain_1.chain_name === chainA?.name;
 
       setLink(
         await Link.createWithExistingConnections(
-          clientA,
-          clientB,
+          clients[0]!,
+          clients[1]!,
           connections[0][isCorrectOrder ? "chain_1" : "chain_2"].connection_id,
           connections[0][isCorrectOrder ? "chain_2" : "chain_1"].connection_id
         )
