@@ -62,7 +62,9 @@ function ChainBox({ side }: { side: String }) {
       .enable(chainInfo.chain_id)
       .then(() => {
         setSigner(
-          window[window.keplr ? "keplr" : "leap"].getOfflineSigner(chainInfo)
+          window[window.keplr ? "keplr" : "leap"].getOfflineSigner(
+            chainInfo.chain_id
+          )
         );
       });
   };
