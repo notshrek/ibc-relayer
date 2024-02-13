@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Introduction from "./Introduction";
 import ChainSelector from "./ChainSelector";
-import useSignerStore from "../_stores/signerStore";
+import type { IBCInfo } from "@chain-registry/types";
+import PacketsList from "./PacketsList";
+import useChainStore from "../_stores/chainStore";
 
 export default function Main() {
   const mainRef = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState<number>(0);
+  const [connections, setConnections] = useState<IBCInfo[]>([]);
 
   useEffect(() => {
     setTimeout(() => (mainRef.current!.style.opacity = "1"), 1750);
@@ -27,14 +30,26 @@ export default function Main() {
     }
   };
 
-  const signerA = useSignerStore((state) => state.signerA);
-  const signerB = useSignerStore((state) => state.signerB);
+  const chainA = useChainStore((state) => state.chainA);
+  const chainB = useChainStore((state) => state.chainB);
 
   useEffect(() => {
-    if (signerA && signerB) {
-      handleStepChange();
+    if (chainA && chainB) {
+      (async () => {
+        const ibc = (await import("chain-registry")).ibc;
+        setConnections(
+          ibc.filter(
+            (i) =>
+              (i.chain_1.chain_name === chainA.name &&
+                i.chain_2.chain_name === chainB.name) ||
+              (i.chain_2.chain_name === chainA.name &&
+                i.chain_1.chain_name === chainB.name)
+          )
+        );
+        handleStepChange();
+      })();
     }
-  }, [signerA, signerB]);
+  }, [chainA, chainB]);
 
   return (
     <div
@@ -44,6 +59,7 @@ export default function Main() {
     >
       {step === 0 && <Introduction handleStepChange={handleStepChange} />}
       {step === 1 && <ChainSelector />}
+      {step === 2 && <PacketsList connections={connections} />}
     </div>
   );
 }

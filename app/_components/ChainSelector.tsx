@@ -3,6 +3,7 @@ import { Combobox } from "@headlessui/react";
 import { chains } from "chain-registry";
 import { ChevronUpDownIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
 import useSignerStore from "../_stores/signerStore";
+import useChainStore from "../_stores/chainStore";
 
 declare global {
   interface Window {
@@ -56,6 +57,10 @@ function ChainBox({ side }: { side: String }) {
     side === "Source" ? state.setSignerA : state.setSignerB
   );
 
+  const setChain = useChainStore((state) =>
+    side === "Source" ? state.setChainA : state.setChainB
+  );
+
   const handleConnect = () => {
     // use keplr if it's found, otherwise use leap wallet
     window[window.keplr ? "keplr" : "leap"]
@@ -66,11 +71,21 @@ function ChainBox({ side }: { side: String }) {
             chainInfo.chain_id
           )
         );
+
+        setChain({
+          name: chainInfo.chain_name,
+          rpcs: chainInfo.apis!.rpc!.map((rpc) => rpc.address),
+          fee: {
+            denom: chainInfo.fees!.fee_tokens[0].denom,
+            gasPrice: chainInfo.fees!.fee_tokens[0].average_gas_price as number,
+          },
+        });
       });
   };
 
   useEffect(() => {
     setSigner(null);
+    setChain(null);
   }, [selectedChain[0], selectedChain[1]]);
 
   return (
