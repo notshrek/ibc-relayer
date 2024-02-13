@@ -48,7 +48,8 @@ export default function PacketsList({
           } catch (err) {
             console.error(err);
           }
-          ++rpcIdx;
+          rpcIdx =
+            (rpcIdx + 1) % (i === 0 ? chainA!.rpcs : chainB!.rpcs).length;
         }
       }
 
