@@ -68,10 +68,22 @@ export default function PacketsList({
 
   return (
     <>
+      <h2 className="text-lime-300 text-3xl font-semibold mb-4">IBC Packets</h2>
       {link ? (
-        <p>connected</p>
+        <p className="text-lg mb-8">
+          Use the list and filters below to find the packet you would like to
+          relay.
+        </p>
       ) : (
-        <h3>Trying available RPCs to establish a link. Please wait...</h3>
+        <>
+          <p className="text-lg mb-8">
+            Trying various RPCs to establish a link. Please wait.
+          </p>
+          <span className="relative flex items-center justify-center h-5 w-5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-300 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-lime-300"></span>
+          </span>
+        </>
       )}
     </>
   );
