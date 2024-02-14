@@ -3,6 +3,7 @@ import type { Link } from "@confio/relayer";
 import { useEffect, useState } from "react";
 import useSignerStore from "../_stores/signerStore";
 import useChainStore from "../_stores/chainStore";
+import useLinkProgress from "../_hooks/useLinkProgress";
 
 export default function PacketsList({
   connections,
@@ -10,6 +11,8 @@ export default function PacketsList({
   connections: IBCInfo[];
 }) {
   const [link, setLink] = useState<Link | null>(null);
+  const linkProgress = useLinkProgress();
+
   const signerA = useSignerStore((state) => state.signerA);
   const signerB = useSignerStore((state) => state.signerB);
   const chainA = useChainStore((state) => state.chainA);
