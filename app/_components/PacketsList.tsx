@@ -17,7 +17,6 @@ export default function PacketsList({
 
   useEffect(() => {
     (async () => {
-      const { Link } = await import("@confio/relayer");
       const { createClient } = await import("../_utils/createClient");
 
       const [clientA, clientB] = await Promise.all([
@@ -25,6 +24,7 @@ export default function PacketsList({
         createClient(chainB!, signerB),
       ]);
 
+      const { Link } = await import("@confio/relayer");
       const isCorrectOrder = connections[0].chain_1.chain_name === chainA?.name;
 
       setLink(
