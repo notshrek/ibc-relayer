@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type chainInfo = {
+export type chainInfo = {
   name: string;
   rpcs: string[];
   fee: { denom: string; gasPrice: number };
