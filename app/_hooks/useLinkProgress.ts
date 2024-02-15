@@ -5,7 +5,7 @@ export default function useLinkProgress() {
 
   useEffect(() => {
     const handleLinkProgress = (e: CustomEvent) => {
-      setLinkProgress([...linkProgress, e.detail]);
+      setLinkProgress((progress) => [e.detail, ...progress]);
     };
 
     window.addEventListener(
@@ -18,7 +18,7 @@ export default function useLinkProgress() {
         "linkprogress",
         handleLinkProgress as EventListener
       );
-  }, [linkProgress]);
+  }, []);
 
   return linkProgress;
 }
