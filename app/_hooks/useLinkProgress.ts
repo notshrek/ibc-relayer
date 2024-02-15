@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 
 export default function useLinkProgress() {
-  const [linkProgress, setLinkProgress] = useState<string[]>([]);
+  const [linkProgress, setLinkProgress] = useState<
+    { msg: string; id: string }[]
+  >([]);
 
   useEffect(() => {
     const handleLinkProgress = (e: CustomEvent) => {
-      setLinkProgress((progress) => [e.detail, ...progress]);
+      setLinkProgress((progress) => [
+        { msg: e.detail, id: Math.random().toString() + e.timeStamp },
+        ...progress,
+      ]);
     };
 
     window.addEventListener(
