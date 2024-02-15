@@ -11,6 +11,12 @@ export async function createClient(
 
   while (true) {
     try {
+      window.dispatchEvent(
+        new CustomEvent("linkprogress", {
+          detail: `[${chain.name}] Trying RPC endpoint: ${chain.rpcs[rpcIdx]}`,
+        })
+      );
+
       const client = await IbcClient.connectWithSigner(
         chain.rpcs[rpcIdx],
         signer,
@@ -20,6 +26,12 @@ export async function createClient(
           estimatedBlockTime: 3,
           estimatedIndexerTime: 5,
         }
+      );
+
+      window.dispatchEvent(
+        new CustomEvent("linkprogress", {
+          detail: `[${chain.name}] Successfully connected to ${chain.rpcs[rpcIdx]}`,
+        })
       );
 
       console.log(`${chain.name} client:`, client);

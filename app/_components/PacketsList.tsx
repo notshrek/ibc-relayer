@@ -22,10 +22,22 @@ export default function PacketsList({
     (async () => {
       const { createClient } = await import("../_utils/createClient");
 
+      window.dispatchEvent(
+        new CustomEvent("linkprogress", {
+          detail: "[INIT] Initiating IBC client creation",
+        })
+      );
+
       const [clientA, clientB] = await Promise.all([
         createClient(chainA!, signerA),
         createClient(chainB!, signerB),
       ]);
+
+      window.dispatchEvent(
+        new CustomEvent("linkprogress", {
+          detail: "[INIT] Initiating IBC link creation",
+        })
+      );
 
       const { Link } = await import("@confio/relayer");
       const isCorrectOrder = connections[0].chain_1.chain_name === chainA?.name;
