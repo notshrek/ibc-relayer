@@ -70,6 +70,19 @@ export default function PacketsList({
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-300 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-4 w-4 bg-lime-300"></span>
           </span>
+          <p
+            className="h-12 w-screen overflow-hidden font-mono text-xs mt-16"
+            style={{
+              maskImage: "linear-gradient(to bottom, white, transparent)",
+              WebkitMaskImage: "linear-gradient(to bottom, white, transparent)",
+            }}
+          >
+            {linkProgress.map((e) => (
+              <span className="block text-center" key={e.id}>
+                {e.msg}
+              </span>
+            ))}
+          </p>
         </>
       )}
     </>
